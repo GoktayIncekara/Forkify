@@ -2,6 +2,7 @@ import * as model from './model.js';
 import recipeView from './views/recipeView.js';
 import searchView from './views/searchView.js';
 import resultsView from './views/resultsView.js';
+import paginationView from './views/paginationView.js';
 
 import 'core-js/stable';
 import 'regenerator-runtime/runtime';
@@ -21,21 +22,28 @@ const controlRecipes = async function () {
   }
 };
 
-const searchRecipes = async function () {
+const controlSearchResults = async function () {
   try {
     resultsView.renderSpinner();
     const query = searchView.getQuery();
     if (!query) return;
     await model.searchRecipes(query);
-    resultsView.render(model.state.search.results);
+    resultsView.render(model.getSearchResultsPage());
+    paginationView.render(model.state.search);
   } catch (error) {
     console.error(error);
   }
 };
 
+const controlPagination = function (pageNum) {
+  resultsView.render(model.getSearchResultsPage(pageNum));
+  paginationView.render(model.state.search);
+};
+
 const init = function () {
   recipeView.addHandlerRender(controlRecipes);
-  searchView.addHandlerSearch(searchRecipes);
+  searchView.addHandlerSearch(controlSearchResults);
+  paginationView.addHandlerPagination(controlPagination);
 };
 
 init();
