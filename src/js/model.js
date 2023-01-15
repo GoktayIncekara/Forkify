@@ -1,3 +1,4 @@
+import { async } from 'regenerator-runtime';
 import { API_URL, RES_PER_PAGE } from './config.js';
 import { getJSON } from './helpers.js';
 
@@ -96,5 +97,33 @@ const init = function () {
   if (storage) state.bookMarks = JSON.parse(storage);
 };
 
+export const uploadRecipe = async function (newRecipe) {
+  try {
+    const ingredients = Object.entries(newRecipe)
+      .filter(entry => entry[0].startsWith('ingredient') && entry[1] !== '')
+      .map(ing => {
+        const ingArr = ing[1].replaceAll(' ', '').split(',');
+        if (ingArr.length !== 3)
+          throw new Error(
+            'Wrong ingredient format! Please use the correct formating'
+          );
+
+        const [quantity, unit, description] = ingArr;
+        return { quantity: quantity ? +quantity : null, unit, description };
+      });
+
+    const recipe = {
+      title: newRecipe.title,
+      source_url: newRecipe.sourceUrl,
+      image_url: newRecipe.image,
+      publisher: newRecipe.publisher,
+      cooking_time: +newRecipe.cookingTime,
+      servings: +newRecipe.servings,
+      ingredients,
+    };
+  } catch (error) {
+    throw error;
+  }
+};
+
 init();
-console.log(state.bookMarks);

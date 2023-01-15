@@ -37,10 +37,6 @@ export default class View {
     });
   }
 
-  orospu(data) {
-    console.log('orospu', data);
-  }
-
   _clear() {
     this._parentElement.innerHTML = '';
   }
