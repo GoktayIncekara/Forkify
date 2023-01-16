@@ -21,7 +21,7 @@ class PaginationView extends View {
     );
 
     if (curPage === 1 && numPages > 1) {
-      return this._generateButtonRight(curPage);
+      return `${this._generateButtonRight(curPage)}`;
     }
     if (curPage === numPages && numPages > 1) {
       return this._generateButtonLeft(curPage);
